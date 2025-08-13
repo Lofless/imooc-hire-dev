@@ -1,0 +1,6 @@
+server:
+  port: 6001
+  tomcat:
+    uri-encoding: UTF-8
+    # 上传文件大小限制
+    max-swallow-size: -1
