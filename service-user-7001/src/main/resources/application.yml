@@ -1,9 +1,9 @@
-#server:
-#  port: 7001
-#  tomcat:
-#    uri-encoding: UTF-8
-#    # 上传文件大小限制
-#    max-swallow-size: -1
+server:
+  port: 7001
+  tomcat:
+    uri-encoding: UTF-8
+    # 上传文件大小限制
+    max-swallow-size: -1
 
 spring:
   profiles:
