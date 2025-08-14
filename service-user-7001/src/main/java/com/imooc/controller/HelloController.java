@@ -26,7 +26,7 @@ public class HelloController {
         Stu stu = new Stu();
         stu.setAge(18);
         stu.setName("imooc");
-        stu.setId(1010);
+//        stu.setId(1010);
 
         stuService.save(stu);
         return "ok";
