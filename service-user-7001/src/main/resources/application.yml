@@ -1,11 +1,13 @@
 server:
-  port: 7001
+  port: ${port:7001}
   tomcat:
     uri-encoding: UTF-8
     # 上传文件大小限制
     max-swallow-size: -1
 
 spring:
+  application:
+    name: user-service
   profiles:
     active: dev
 
