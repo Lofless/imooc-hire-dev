@@ -2,7 +2,7 @@
 //	此资源由 58学课资源站 收集整理
 //	想要获取完整课件资料 请访问：58xueke.com
 //	百万资源 畅享学习
-package com.imooc.grace.result;
+package com.imooc.result;
 
 /**
  * 响应结果枚举，用于提供给GraceJSONResult返回给前端的
@@ -97,6 +97,7 @@ public enum ResponseStatusEnum {
     SYSTEM_ERROR_ZUUL(560, false, "请求系统过于繁忙，请稍后再试！"),
     SYSTEM_PARAMS_SETTINGS_ERROR(5611, false, "参数设置不规范！"),
     ZOOKEEPER_BAD_VERSION_ERROR(5612, false, "数据过时，请刷新页面重试！"),
+    SYSTEM_ERROR_BLACK_IP(5621, false, "请求过于频繁，请稍后重试！"),
 
     DATA_DICT_EXIST_ERROR(5631, false, "数据字典已存在，不可重复添加或修改！"),
     DATA_DICT_DELETE_ERROR(5632, false, "删除数据字典失败！"),
