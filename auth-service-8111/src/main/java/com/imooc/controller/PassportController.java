@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("passport")
+@RequestMapping("/passport")
 @Slf4j
 public class PassportController extends BaseInfoProperties {
 
-    @GetMapping("getSMSCode")
+    @GetMapping("/getSMSCode")
     public GraceJSONResult getSMSCode(String mobile, HttpServletRequest request) {
 
         // 判断是否传输mobile
@@ -26,7 +26,7 @@ public class PassportController extends BaseInfoProperties {
 
         // 获取用户IP
         String userIp = IPUtil.getRequestIp(request);
-        // 限制用户只能在60s以为获得一次验证码
+        // 限制用户只能在60s以为获得一次验证码，限制发送的业务代码已经放在了拦截器里面
         redis.setnx60s(MOBILE_SMSCODE+":"+userIp, mobile);
 
         String code = (int)((Math.random() * 9 + 1) * 100000) + "";

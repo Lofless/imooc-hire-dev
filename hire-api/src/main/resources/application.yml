@@ -1,0 +1,11 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    # 上传文件大小限制
+    max-swallow-size: -1
+
+spring:
+  application:
+    name: api-service
+  profiles:
+    active: dev
