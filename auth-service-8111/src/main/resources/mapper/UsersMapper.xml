@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.mapper.UsersMapper">
+
+    <resultMap id="BaseResultMap" type="com.imooc.pojo.Users">
+            <id property="id" column="id" />
+            <result property="mobile" column="mobile" />
+            <result property="nickname" column="nickname" />
+            <result property="realName" column="real_name" />
+            <result property="showWhichName" column="show_which_name" />
+            <result property="sex" column="sex" />
+            <result property="face" column="face" />
+            <result property="email" column="email" />
+            <result property="birthday" column="birthday" />
+            <result property="country" column="country" />
+            <result property="province" column="province" />
+            <result property="city" column="city" />
+            <result property="district" column="district" />
+            <result property="description" column="description" />
+            <result property="startWorkDate" column="start_work_date" />
+            <result property="position" column="position" />
+            <result property="role" column="role" />
+            <result property="hrInWhichCompanyId" column="hr_in_which_company_id" />
+            <result property="hrSignature" column="hr_signature" />
+            <result property="hrTags" column="hr_tags" />
+            <result property="createdTime" column="created_time" />
+            <result property="updatedTime" column="updated_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mobile,nickname,real_name,show_which_name,sex,
+        face,email,birthday,country,province,
+        city,district,description,start_work_date,position,
+        role,hr_in_which_company_id,hr_signature,hr_tags,created_time,
+        updated_time
+    </sql>
+</mapper>

@@ -15,8 +15,8 @@
             <option name="ignoreFieldSuffix" value="" />
             <option name="ignoreTablePrefix" value="" />
             <option name="ignoreTableSuffix" value="" />
-            <option name="moduleName" value="hire-pojo" />
-            <option name="modulePath" value="$PROJECT_DIR$/hire-pojo" />
+            <option name="moduleName" value="auth-service-8111" />
+            <option name="modulePath" value="$PROJECT_DIR$/auth-service-8111" />
             <option name="moduleUIInfoList">
               <list>
                 <ModuleInfoGo>
@@ -26,7 +26,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}ServiceImpl" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}ServiceImpl.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/hire-pojo" />
+                  <option name="modulePath" value="$PROJECT_DIR$/auth-service-8111" />
                   <option name="packageName" value="${domain.basePackage}.service.impl" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -36,7 +36,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/hire-pojo" />
+                  <option name="modulePath" value="$PROJECT_DIR$/auth-service-8111" />
                   <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -46,7 +46,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Service" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Service.java" />
-                  <option name="modulePath" value="$PROJECT_DIR$/hire-pojo" />
+                  <option name="modulePath" value="$PROJECT_DIR$/auth-service-8111" />
                   <option name="packageName" value="${domain.basePackage}.service" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
@@ -56,7 +56,7 @@
                   <option name="encoding" value="${domain.encoding}" />
                   <option name="fileName" value="${domain.fileName}Mapper" />
                   <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.xml" />
-                  <option name="modulePath" value="$PROJECT_DIR$/hire-pojo" />
+                  <option name="modulePath" value="$PROJECT_DIR$/auth-service-8111" />
                   <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
               </list>
@@ -69,82 +69,6 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Admin" />
-                  <option name="tableName" value="admin" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Article" />
-                  <option name="tableName" value="article" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ChatMessage" />
-                  <option name="tableName" value="chat_message" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Company" />
-                  <option name="tableName" value="company" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="CompanyPhoto" />
-                  <option name="tableName" value="company_photo" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="DataDictionary" />
-                  <option name="tableName" value="data_dictionary" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Industry" />
-                  <option name="tableName" value="industry" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Interview" />
-                  <option name="tableName" value="interview" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Job" />
-                  <option name="tableName" value="job" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="JobType" />
-                  <option name="tableName" value="job_type" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Orders" />
-                  <option name="tableName" value="orders" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ReportJob" />
-                  <option name="tableName" value="report_job" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Resume" />
-                  <option name="tableName" value="resume" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ResumeEducation" />
-                  <option name="tableName" value="resume_education" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ResumeExpect" />
-                  <option name="tableName" value="resume_expect" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ResumeProjectExp" />
-                  <option name="tableName" value="resume_project_exp" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="ResumeWorkExp" />
-                  <option name="tableName" value="resume_work_exp" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Stu" />
-                  <option name="tableName" value="stu" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="SysParams" />
-                  <option name="tableName" value="sys_params" />
-                </TableUIInfo>
-                <TableUIInfo>
                   <option name="className" value="Users" />
                   <option name="tableName" value="users" />
                 </TableUIInfo>
@@ -154,7 +78,7 @@
             <option name="useLombokPlugin" value="true" />
           </GenerateConfig>
         </option>
-        <option name="moduleName" value="hire-pojo" />
+        <option name="moduleName" value="auth-service-8111" />
         <option name="projectPath" value="$PROJECT_DIR$" />
         <option name="templateName" value="mybatis-plus3" />
       </TemplateContext>
