@@ -3,6 +3,7 @@ package com.imooc.controller;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.result.GraceJSONResult;
+import com.imooc.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,11 @@ public class PassportController extends BaseInfoProperties {
         if(StringUtils.isBlank(mobile)){
             return GraceJSONResult.error();
         }
+
+        // 获取用户IP
+        String userIp = IPUtil.getRequestIp(request);
+        // 限制用户只能在60s以为获得一次验证码
+        redis.setnx60s(MOBILE_SMSCODE+":"+userIp, mobile);
 
         String code = (int)((Math.random() * 9 + 1) * 100000) + "";
         // 不真实发送
