@@ -12,4 +12,8 @@ import com.imooc.pojo.Users;
 public interface UsersService {
 
     public Users getOne();
+
+    Users queryMobileIsExist(String mobile);
+
+    Users createUsers(String mobile);
 }
