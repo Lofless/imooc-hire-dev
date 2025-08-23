@@ -1,6 +1,7 @@
 package com.imooc.controller;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.RegistLoginBO;
@@ -9,6 +10,7 @@ import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.UsersService;
 import com.imooc.utils.IPUtil;
+import com.imooc.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/passport")
@@ -25,6 +26,9 @@ public class PassportController extends BaseInfoProperties {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private JWTUtils jwtUtils;
 
     @GetMapping("/getSMSCode")
     public GraceJSONResult getSMSCode(String mobile, HttpServletRequest request) {
@@ -68,8 +72,10 @@ public class PassportController extends BaseInfoProperties {
         }
 
         // 存储token，分布式会话到redis中
-        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID().toString();
-        redis.set(REDIS_USER_TOKEN + ":" +user.getId(), uToken);
+//        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID().toString();
+//        redis.set(REDIS_USER_TOKEN + ":" +user.getId(), uToken);
+        String jwt = jwtUtils.createJWTWithPrefix(JSONObject.toJSON(user).toString(),
+                1000L, TOKEN_USER_PREFIX);
 
         // 3. 用户登录注册后，删除redis中的短信验证码
         redis.del(MOBILE_SMSCODE+":"+mobile);
@@ -77,7 +83,7 @@ public class PassportController extends BaseInfoProperties {
         // 4.返回用户的信息给前端
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(user, usersVO);
-        usersVO.setUserToken(uToken);
+        usersVO.setUserToken(jwt);
         return GraceJSONResult.ok(usersVO);
     }
 
