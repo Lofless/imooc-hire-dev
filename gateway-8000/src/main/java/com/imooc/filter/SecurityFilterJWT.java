@@ -1,12 +1,20 @@
 package com.imooc.filter;
 
+import com.alibaba.fastjson.JSONObject;
+import com.imooc.exceptions.GraceException;
+import com.imooc.result.GraceJSONResult;
+import com.imooc.result.ResponseStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -45,7 +53,41 @@ public class SecurityFilterJWT implements GlobalFilter, Ordered {
         }
 
         log.info("被拦截了～～");
+        // 不放行，jwt校验出错了
+//        GraceException.display(ResponseStatusEnum.UN_LOGIN);
+//        return chain.filter(exchange);
+        return renderErrorMsg(exchange,ResponseStatusEnum.UN_LOGIN);
+    }
 
+    /**
+     * 重新包装并且返回错误信息
+     * @param exchange
+     * @param statusEnum
+     * @return
+     */
+    public Mono<Void> renderErrorMsg(ServerWebExchange exchange,
+                                     ResponseStatusEnum statusEnum) {
+        // 1. 获得response
+        ServerHttpResponse response = exchange.getResponse();
+
+        // 2. 构建jsonResult
+        GraceJSONResult jsonResult = GraceJSONResult.exception(statusEnum);
+
+        // 3. 修改response的code为500错误
+        response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        // 4. 设定hearder类型
+        if (!response.getHeaders().containsKey("Content-Type")) {
+            response.getHeaders().add("Content-Type", MimeTypeUtils.APPLICATION_JSON_VALUE);
+        }
+
+        // 5. 转换json并且向response写入数据
+        String json = JSONObject.toJSON(jsonResult).toString();
+        DataBuffer dataBuffer = response
+                .bufferFactory()
+                .wrap(json.getBytes());
+
+        return response.writeWith(Mono.just(dataBuffer));
     }
 
     // 过滤器额顺序，数字越小优先级越大
