@@ -1,15 +1,18 @@
 package com.imooc.filter;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.imooc.exceptions.GraceException;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
+import com.imooc.utils.JWTUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -24,8 +27,13 @@ import java.util.List;
 @Slf4j
 public class SecurityFilterJWT implements GlobalFilter, Ordered {
 
+    public static final String HEADER_USER_TOKEN = "headerUserToken";
+
     @Autowired
     private ExcludeUrlProperties excludeUrlProperties;
+
+    @Autowired
+    private JWTUtils jwtUtils;
 
     // 路径规则匹配器
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -48,17 +56,48 @@ public class SecurityFilterJWT implements GlobalFilter, Ordered {
                     // 如果匹配到，就直接放行，表示不需要拦截
                     return chain.filter(exchange);
                 }
-
             }
         }
 
-        log.info("被拦截了～～");
+        // 判断hearder中是否有token
+        HttpHeaders headers = exchange.getRequest().getHeaders();
+        String userToken = headers.getFirst(HEADER_USER_TOKEN);
+        log.info("userToken:{}", userToken);
+
+        if(StringUtils.isNotBlank(userToken)){
+            String[] tokenArr = userToken.split(JWTUtils.at);
+            if(tokenArr.length < 2) {
+                return renderErrorMsg(exchange, ResponseStatusEnum.UN_LOGIN);
+            }
+
+            // 获得jwt令牌和前缀
+            String prefix = tokenArr[0];
+            String jwt = tokenArr[1];
+
+            // 解析校验
+            return dealJWT(jwt, exchange, chain);
+        }
+
+
+        log.error("被拦截了～～");
         // 不放行，jwt校验出错了
 //        GraceException.display(ResponseStatusEnum.UN_LOGIN);
 //        return chain.filter(exchange);
         return renderErrorMsg(exchange,ResponseStatusEnum.UN_LOGIN);
     }
 
+    public Mono<Void> dealJWT(String jwt, ServerWebExchange exchange, GatewayFilterChain chain){
+        try{
+            String userJson = jwtUtils.checkJWT(jwt);
+            return chain.filter(exchange);
+        }catch (ExpiredJwtException e){
+            e.printStackTrace();
+            return renderErrorMsg(exchange, ResponseStatusEnum.JWT_EXPIRE_ERROR);
+        }catch (Exception e){
+            e.printStackTrace();
+            return renderErrorMsg(exchange, ResponseStatusEnum.JWT_SIGNATURE_ERROR);
+        }
+    }
     /**
      * 重新包装并且返回错误信息
      * @param exchange

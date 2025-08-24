@@ -2,7 +2,6 @@ package com.imooc.intercept;
 
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.exceptions.GraceException;
-import com.imooc.exceptions.MyCustomException;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
