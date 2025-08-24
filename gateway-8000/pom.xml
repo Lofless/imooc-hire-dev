@@ -38,6 +38,11 @@
             <classifier>osx-aarch_64</classifier>
             <version>4.1.108.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
