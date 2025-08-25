@@ -2,6 +2,7 @@ package com.imooc.filter;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.imooc.base.BaseInfoProperties;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.utils.JWTUtils;
@@ -14,6 +15,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -25,7 +27,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class SecurityFilterJWT implements GlobalFilter, Ordered {
+public class SecurityFilterJWT extends BaseInfoProperties implements GlobalFilter, Ordered {
 
     public static final String HEADER_USER_TOKEN = "headerUserToken";
 
@@ -75,7 +77,15 @@ public class SecurityFilterJWT implements GlobalFilter, Ordered {
             String jwt = tokenArr[1];
 
             // 解析校验
-            return dealJWT(jwt, exchange, chain);
+            switch (prefix) {
+                case TOKEN_USER_PREFIX:
+                    return dealJWT(jwt, exchange, chain, APP_USER_JSON);
+                case TOKEN_SAAS_PREFIX:
+                    return dealJWT(jwt, exchange, chain, SAAS_USER_JSON);
+                case TOKEN_ADMIN_PREFIX:
+                    return dealJWT(jwt, exchange, chain, ADMIN_USER_JSON);
+            }
+
         }
 
 
@@ -86,10 +96,11 @@ public class SecurityFilterJWT implements GlobalFilter, Ordered {
         return renderErrorMsg(exchange,ResponseStatusEnum.UN_LOGIN);
     }
 
-    public Mono<Void> dealJWT(String jwt, ServerWebExchange exchange, GatewayFilterChain chain){
+    public Mono<Void> dealJWT(String jwt, ServerWebExchange exchange, GatewayFilterChain chain, String key){
         try{
             String userJson = jwtUtils.checkJWT(jwt);
-            return chain.filter(exchange);
+            ServerWebExchange newExchange = setNewHeader(exchange, key, userJson);
+            return chain.filter(newExchange);
         }catch (ExpiredJwtException e){
             e.printStackTrace();
             return renderErrorMsg(exchange, ResponseStatusEnum.JWT_EXPIRE_ERROR);
@@ -97,6 +108,25 @@ public class SecurityFilterJWT implements GlobalFilter, Ordered {
             e.printStackTrace();
             return renderErrorMsg(exchange, ResponseStatusEnum.JWT_SIGNATURE_ERROR);
         }
+    }
+
+    /**
+     *
+     * @param exchange
+     * @param headerKey
+     * @param HeaderValue
+     * @return
+     */
+    public ServerWebExchange setNewHeader(ServerWebExchange exchange,
+                                          String headerKey,
+                                          String HeaderValue){
+
+        // 重新构建新的request
+        ServerHttpRequest newRequest = exchange.getRequest().mutate().header(headerKey, HeaderValue).build();
+
+        // 替换原来的request
+        ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
+        return newExchange;
     }
     /**
      * 重新包装并且返回错误信息

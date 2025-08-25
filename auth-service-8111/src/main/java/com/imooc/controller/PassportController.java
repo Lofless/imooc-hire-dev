@@ -75,7 +75,8 @@ public class PassportController extends BaseInfoProperties {
 //        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID().toString();
 //        redis.set(REDIS_USER_TOKEN + ":" +user.getId(), uToken);
         String jwt = jwtUtils.createJWTWithPrefix(JSONObject.toJSON(user).toString(),
-                60 * 1000L, TOKEN_USER_PREFIX);
+//                60 * 1000L,
+                TOKEN_USER_PREFIX);
 
         // 3. 用户登录注册后，删除redis中的短信验证码
         redis.del(MOBILE_SMSCODE+":"+mobile);
