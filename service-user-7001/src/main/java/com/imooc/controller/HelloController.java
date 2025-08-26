@@ -2,6 +2,7 @@ package com.imooc.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.intercept.JWTCurrentUserInterceptor;
 import com.imooc.pojo.Stu;
 import com.imooc.pojo.Users;
 import com.imooc.service.StuService;
@@ -31,10 +32,13 @@ public class HelloController extends BaseInfoProperties {
     @GetMapping("hello")
     public Object hello(HttpServletRequest request) {
         // 在网关中已经处理好了用户的信息，这边可以直接展示出来
-        String userJson = request.getHeader(APP_USER_JSON);
-        Users user = JSON.parseObject(userJson, Users.class);
-        log.info("userJson:{}",user);
-        log.info("port:{}",port);
+//        String userJson = request.getHeader(APP_USER_JSON);
+//        Users user = JSON.parseObject(userJson, Users.class);
+//        log.info("userJson:{}",user);
+
+        Users users = JWTCurrentUserInterceptor.currentUser.get();
+        log.info("JWTCurrentUserInterceptor:{}",users);
+
         return "Hello UserService~~";
     }
 
