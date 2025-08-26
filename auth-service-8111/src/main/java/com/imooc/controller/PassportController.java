@@ -92,7 +92,7 @@ public class PassportController extends BaseInfoProperties {
     public GraceJSONResult logout(@RequestParam String userId, HttpServletRequest request) {
 
         // 后端只需要清除用户的信息即可，前端也需要清除用户的相关信息
-        redis.del(REDIS_USER_TOKEN + ":" + userId);
+//        redis.del(REDIS_USER_TOKEN + ":" + userId);
         return GraceJSONResult.ok();
     }
 

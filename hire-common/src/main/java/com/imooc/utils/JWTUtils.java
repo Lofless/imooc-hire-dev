@@ -9,6 +9,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Encoder;
 
@@ -22,12 +24,16 @@ import java.util.Date;
  */
 @Component
 @Slf4j
+@RefreshScope
 public class JWTUtils {
 
     @Autowired
     private JWTProperties jwtProperties;
 
     public static final String at = "@";
+
+    @Value("${jwt.key}")
+    private String JWT_KEY;
 
     /**
      * 有前缀
@@ -83,7 +89,9 @@ public class JWTUtils {
      */
     public String dealJWT(String body, Long expire) {
 
-        String userKey = jwtProperties.getKey();
+//        String userKey = jwtProperties.getKey();
+        String userKey = JWT_KEY;
+        log.info("userKey:{}", userKey);
         // 对密钥进行base64编码
         String base64 = new BASE64Encoder().encode(userKey.getBytes());
         // 对base64生成一个密钥对象
@@ -142,7 +150,9 @@ public class JWTUtils {
      */
     public String checkJWT(String pendingJWT) {
 
-        String userKey = jwtProperties.getKey();
+//        String userKey = jwtProperties.getKey();
+        String userKey = JWT_KEY;
+        log.info("userKey:{}", userKey);
         // 对密钥进行base64编码
         String base64 = new BASE64Encoder().encode(userKey.getBytes());
         // 对base64生成一个密钥对象
