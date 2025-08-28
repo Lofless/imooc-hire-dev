@@ -1,6 +1,10 @@
 package com.imooc.exceptions;
 
 import com.imooc.result.GraceJSONResult;
+import com.imooc.result.ResponseStatusEnum;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,12 +12,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
-public class GraceExceptionHandle {
+public class GraceExceptionHandler {
 
     @ExceptionHandler(MyCustomException.class)
     @ResponseBody
@@ -22,26 +27,42 @@ public class GraceExceptionHandle {
         return GraceJSONResult.exception(e.getResponseStatusEnum());
     }
 
+    @ExceptionHandler({
+            SignatureException.class,
+            ExpiredJwtException.class,
+            UnsupportedJwtException.class,
+            MalformedJwtException.class,
+            io.jsonwebtoken.security.SignatureException.class
+    })
+    @ResponseBody
+    public GraceJSONResult returnSignatureException(SignatureException e) {
+        e.printStackTrace();
+        return GraceJSONResult.exception(ResponseStatusEnum.JWT_SIGNATURE_ERROR);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public GraceJSONResult returnArgumentNotValidException(MethodArgumentNotValidException e) {
+    public GraceJSONResult returnNotValidException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         Map<String, String> errors = getErrors(result);
         return GraceJSONResult.errorMap(errors);
     }
 
-    public Map<String, String> getErrors(BindingResult result){
+    public Map<String, String> getErrors(BindingResult result) {
 
         Map<String, String> map = new HashMap<>();
+
         List<FieldError> errorList = result.getFieldErrors();
-        for(FieldError f : errorList){
+        for (FieldError fe : errorList) {
             // 错误所对应的属性字段名
-            String field = f.getField();
+            String field = fe.getField();
             // 错误信息
-            String message = f.getDefaultMessage();
+            String message = fe.getDefaultMessage();
+
             map.put(field, message);
         }
 
         return map;
     }
+
 }
