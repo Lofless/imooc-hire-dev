@@ -78,6 +78,12 @@ public class UsersServiceImpl implements UsersService{
 
         return user;
     }
+
+    @Override
+    public Users getById(String userId) {
+        Users user = usersMapper.selectById(userId);
+        return user;
+    }
 }
 
 

@@ -4,17 +4,12 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.pojo.Users;
-import com.imooc.pojo.bo.RegistLoginBO;
-import com.imooc.pojo.vo.UsersVO;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.UsersService;
-import com.imooc.utils.IPUtil;
 import com.imooc.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +24,9 @@ public class SaasPassportController extends BaseInfoProperties {
 
     @Autowired
     private JWTUtils jwtUtils;
+
+    @Autowired
+    private UsersService usersService;
 
     /**
      * 1. 获得二维码token令牌
@@ -92,7 +90,7 @@ public class SaasPassportController extends BaseInfoProperties {
     }
 
     /**
-     * 3. saas网页端在每隔一段时间（3s）定时查询qrToken是否被读取，用于页面的展示标记判断
+     * 3. saas网页端在每隔一段时间（3s）定时查询qrToken是否被读取，用于页面是否被扫码的展示标记判断
      * 前端处理：限制用户在页面不操作而频繁发起调用：【页面失效，请刷新后再执行扫码登录】
      * @param qrToken
      * @return
@@ -117,7 +115,40 @@ public class SaasPassportController extends BaseInfoProperties {
             return GraceJSONResult.ok(list);
         }
 
+    }
 
+    /**
+     * 4. 手机端点击登录，携带preToken与后端进行判断，如果校验ok则登录成功
+     * 注：如果使用websocket或netty，可以在此直接通信H5进行页面跳转
+     * @param userId
+     * @param qrToken
+     * @param preToken
+     * @return
+     */
+    @PostMapping("goQRLogin")
+    public GraceJSONResult goQRLogin(String userId,
+                                     String qrToken,
+                                     String preToken) {
+
+        // 获得标记的preToken
+        String preTokenRedisArr = redis.get(SAAS_PLATFORM_LOGIN_TOKEN_READ + ":" + qrToken);
+
+        if(StringUtils.isNotBlank(preToken)) {
+            String preTokenRedis = preTokenRedisArr.split(",")[1];
+            if(preTokenRedis.equals(preToken)) {
+                // 根据用户id获得用户信息
+                Users hrUser = usersService.getById(userId);
+                if(hrUser == null) {
+                    return GraceJSONResult.errorCustom(ResponseStatusEnum.USER_NOT_EXIST_ERROR);
+                }
+
+                // 存入用户信息到redis中，因为H5在未登录的情况下，拿不到用户ID，如果使用websocket是可以直接通信H5获得用户id，则无此问题
+                // 当前接口不使用，在checkLogin接口用来判断是否已经登录
+                redis.set(REDIS_SAAS_USER_INFO + ":temp:" + preToken, JSONObject.toJSON(hrUser).toString(), 5* 60 );
+            }
+        }
+
+        return GraceJSONResult.ok();
 
     }
 

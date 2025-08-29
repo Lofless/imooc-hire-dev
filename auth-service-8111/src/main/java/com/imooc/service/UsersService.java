@@ -16,4 +16,6 @@ public interface UsersService {
     Users queryMobileIsExist(String mobile);
 
     Users createUsers(String mobile);
+
+    Users getById(String userId);
 }
