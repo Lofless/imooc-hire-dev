@@ -4,11 +4,13 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.pojo.Users;
+import com.imooc.pojo.vo.SaasUserVO;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.UsersService;
 import com.imooc.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -150,6 +152,49 @@ public class SaasPassportController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
 
+    }
+
+
+    /**
+     * 5.检查登录
+     * @param preToken
+     * @return
+     */
+    @PostMapping("checkLogin")
+    public GraceJSONResult checkLogin (String preToken) {
+
+        if(StringUtils.isBlank(preToken)) {
+            return GraceJSONResult.ok("");
+        }
+
+        // 获得用户的临时信息
+        String userJson = redis.get(REDIS_SAAS_USER_INFO + ":temp:" + preToken);
+        if(StringUtils.isBlank(userJson)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.USER_NOT_EXIST_ERROR);
+        }
+
+        // 确认执行登陆后，生成saas用户的token，并且长期有效，这边不设置时间有效期了
+        String saasUserToken = jwtUtils.createJWTWithPrefix(userJson, TOKEN_SAAS_PREFIX);
+
+        // 存入用户信息长期有效
+        redis.set(REDIS_SAAS_USER_INFO + ":" + saasUserToken, userJson);
+        return GraceJSONResult.ok(saasUserToken);
+
+    }
+
+    @GetMapping("info")
+    public GraceJSONResult info(String token) {
+        String userJson = redis.get(REDIS_SAAS_USER_INFO + ":" + token);
+        Users sassUser = JSONObject.parseObject(userJson, Users.class);
+        SaasUserVO saasUserVO = new SaasUserVO();
+        BeanUtils.copyProperties(sassUser, saasUserVO);
+
+        return GraceJSONResult.ok(saasUserVO);
+    }
+
+    @PostMapping("logout")
+    public GraceJSONResult logout(String token) {
+        return GraceJSONResult.ok();
     }
 
 }
