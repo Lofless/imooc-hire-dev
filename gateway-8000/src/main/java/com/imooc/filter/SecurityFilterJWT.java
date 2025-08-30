@@ -45,7 +45,7 @@ public class SecurityFilterJWT extends BaseInfoProperties implements GlobalFilte
 
         // 1.获取当前的请求路径
         String url = exchange.getRequest().getURI().getPath();
-        log.info("url:{}", url);
+        log.info("SecurityFilterJWT url = {}", url);
 
         // 2.获取所有的需要排除校验的url list
         List<String> excludeUrlList = excludeUrlProperties.getUrls();

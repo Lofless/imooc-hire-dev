@@ -13,4 +13,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "exclude")
 public class ExcludeUrlProperties {
     private List<String> Urls;
+
+    // 被限制的黑名单
+    private List<String> ipLimitUrls;
 }
