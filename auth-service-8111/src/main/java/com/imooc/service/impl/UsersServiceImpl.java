@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 * @createDate 2025-08-20 12:15:56
 */
 @Service
-public class UsersServiceImpl implements UsersService{
+public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements UsersService{
 
     @Autowired
     private UsersMapper usersMapper;

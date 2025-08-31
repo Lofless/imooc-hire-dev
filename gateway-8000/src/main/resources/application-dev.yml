@@ -23,4 +23,4 @@ spring:
         - id: authRoute
           uri: lb://auth-service
           predicates:
-            - Path=/a/**,/passport/**,/saas/**
+            - Path=/a/**,/passport/**,/saas/**,/admin/**
