@@ -2,9 +2,12 @@ package com.imooc.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.intercept.JWTCurrentUserInterceptor;
 import com.imooc.pojo.Admin;
+import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.AdminBO;
 import com.imooc.pojo.vo.AdminVO;
+import com.imooc.pojo.vo.SaasUserVO;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.AdminService;
@@ -37,11 +40,19 @@ public class AdminController extends BaseInfoProperties {
 
         // 登录成功之后获得admin信息
         Admin admin = adminService.getAdminInfo(adminBO);
-        AdminVO adminVO = new AdminVO();
-        BeanUtils.copyProperties(admin, adminVO);
         String adminToken = jwtUtils.createJWTWithPrefix(JSONObject.toJSON(admin).toString(), TOKEN_ADMIN_PREFIX);
 
         return GraceJSONResult.ok(adminToken);
+    }
+
+    @GetMapping("info")
+    public GraceJSONResult info(String token) {
+
+        Admin admin = JWTCurrentUserInterceptor.adminUser.get();
+        AdminVO adminVO = new AdminVO();
+        BeanUtils.copyProperties(admin, adminVO);
+
+        return GraceJSONResult.ok(adminVO);
     }
 
     @PostMapping("logout")
