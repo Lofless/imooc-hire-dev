@@ -15,7 +15,7 @@ spring:
         - id: userRoute # 每一项路由都有一个唯一的id编号，可以自定义
           uri: lb://user-service  #lb=负载均衡，会动态寻址
           predicates:   # 匹配断言，符合规则就放行（可以模糊匹配也可以精确匹配）
-            - Path=/u/**
+            - Path=/u/**,/admininfo/**
         - id: companyRoute
           uri: lb://company-service
           predicates:

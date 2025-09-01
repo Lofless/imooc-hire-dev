@@ -32,8 +32,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin>
         if(admin == null) {
             return false;
         }else {
-            String slat = admin.getPassword();
-            String md5Str = MD5Utils.encrypt(slat, adminBO.getPassword());
+            String slat = admin.getSlat();
+            String md5Str = MD5Utils.encrypt(adminBO.getPassword(), slat);
             return md5Str.equals(admin.getPassword());
         }
 
