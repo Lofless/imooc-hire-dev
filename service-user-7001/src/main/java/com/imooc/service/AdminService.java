@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.imooc.pojo.Admin;
 import com.imooc.pojo.bo.AdminBO;
 import com.imooc.pojo.bo.createAdminBO;
+import com.imooc.utils.PagedGridResult;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
 * @author yangguang
@@ -15,5 +17,18 @@ import javax.validation.Valid;
 public interface AdminService extends IService<Admin> {
 
 
+    /**
+     * 创建admin账号
+     * @param createAdminBO
+     */
     void createAdmin(createAdminBO createAdminBO);
+
+    /**
+     * 查询admin列表
+     * @param accountName
+     * @param page
+     * @param limit
+     * @return
+     */
+    PagedGridResult list(String accountName, Integer page, Integer limit);
 }
