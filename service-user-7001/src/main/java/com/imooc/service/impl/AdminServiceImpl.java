@@ -71,6 +71,18 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin>
         return baseInfoProperties.setterPagedGrid(adminList, page);
     }
 
+    @Override
+    public void deleteAdmin(String username) {
+
+        int res = adminMapper.delete(
+                new QueryWrapper<Admin>()
+                        .eq("username", username)
+                        .ne("username", "admin")
+        );
+        if(res == 0) GraceException.display(ResponseStatusEnum.ADMIN_DELETE_ERROR);
+
+    }
+
     public Admin getSelfAdmin(String username) {
         return adminMapper.selectOne(
                 new QueryWrapper<Admin>()

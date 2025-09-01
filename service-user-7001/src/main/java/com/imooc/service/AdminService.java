@@ -31,4 +31,10 @@ public interface AdminService extends IService<Admin> {
      * @return
      */
     PagedGridResult list(String accountName, Integer page, Integer limit);
+
+    /**
+     * 删除admin账号
+     * @param username
+     */
+    void deleteAdmin(String username);
 }
